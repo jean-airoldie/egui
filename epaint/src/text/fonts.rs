@@ -372,7 +372,7 @@ impl Fonts {
 
     /// Call at the end of each frame (before painting) to get the change to the font texture since last call.
     pub fn font_image_delta(&self) -> Option<crate::ImageDelta> {
-        self.lock().fonts.atlas.lock().take_delta()
+        self.lock().fonts.font_image_delta()
     }
 
     /// Access the underlying [`FontsAndCache`].
@@ -395,7 +395,7 @@ impl Fonts {
     /// Current size of the font image.
     /// Pass this to [`crate::Tessellator`].
     pub fn font_image_size(&self) -> [usize; 2] {
-        self.lock().fonts.atlas.lock().size()
+        self.lock().fonts.font_image_size()
     }
 
     /// Width of this character in points.
@@ -597,6 +597,17 @@ impl FontsImpl {
     /// Height of one row of text. In points
     fn row_height(&mut self, font_id: &FontId) -> f32 {
         self.font(font_id).row_height()
+    }
+
+    /// Current size of the font image.
+    /// Pass this to [`crate::Tessellator`].
+    pub fn font_image_size(&self) -> [usize; 2] {
+        self.atlas.lock().size()
+    }
+
+    /// Call at the end of each frame (before painting) to get the change to the font texture since last call.
+    pub fn font_image_delta(&self) -> Option<crate::ImageDelta> {
+        self.atlas.lock().take_delta()
     }
 }
 
